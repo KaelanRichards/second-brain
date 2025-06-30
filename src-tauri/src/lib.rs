@@ -5,7 +5,7 @@ mod models;
 mod services;
 
 use db::Database;
-use services::UserService;
+use services::{UserService, NoteService};
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -30,9 +30,11 @@ pub fn run() {
             
             // Initialize services
             let user_service = UserService::new(db.clone());
+            let note_service = NoteService::new(db.clone());
             
             // Add services to app state
             app.manage(user_service);
+            app.manage(note_service);
             app.manage(db);
             
             Ok(())
@@ -42,6 +44,11 @@ pub fn run() {
             commands::get_user_profile,
             commands::update_user_profile,
             commands::create_user,
+            commands::save_note,
+            commands::get_note,
+            commands::delete_note,
+            commands::get_all_notes,
+            commands::search_notes,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

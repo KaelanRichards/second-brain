@@ -1,6 +1,6 @@
-import { forwardRef } from 'react';
 import * as ToastPrimitives from '@radix-ui/react-toast';
 import { X } from 'lucide-react';
+import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const ToastProvider = ToastPrimitives.Provider;
@@ -39,7 +39,8 @@ const Toast = forwardRef<
         'data-[state=open]:sm:slide-in-from-bottom-full',
         {
           'bg-base border-border': variant === 'default',
-          'bg-destructive border-destructive text-destructive-foreground': variant === 'destructive',
+          'bg-destructive border-destructive text-destructive-foreground':
+            variant === 'destructive',
         },
         className
       )}
@@ -92,11 +93,7 @@ const ToastTitle = forwardRef<
   React.ElementRef<typeof ToastPrimitives.Title>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitives.Title
-    ref={ref}
-    className={cn('text-sm font-semibold', className)}
-    {...props}
-  />
+  <ToastPrimitives.Title ref={ref} className={cn('text-sm font-semibold', className)} {...props} />
 ));
 ToastTitle.displayName = ToastPrimitives.Title.displayName;
 

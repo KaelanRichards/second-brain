@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
 import { useGlassEffect } from '@/hooks/use-glass-effect';
+import { cn } from '@/lib/utils';
 
 interface GlassPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'aurora' | 'holographic' | 'frosted' | 'clear' | 'crystal';
@@ -10,24 +10,27 @@ interface GlassPanelProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const GlassPanel = forwardRef<HTMLDivElement, GlassPanelProps>(
-  ({ 
-    className, 
-    variant = 'default', 
-    depth = 'medium',
-    interactive = true,
-    shimmer = false,
-    children,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant = 'default',
+      depth = 'medium',
+      interactive = true,
+      shimmer = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const glassRef = useGlassEffect<HTMLDivElement>();
     const combinedRef = ref || glassRef;
-    
+
     return (
       <div
         ref={combinedRef}
         className={cn(
           'relative rounded-xl overflow-hidden',
-          
+
           // Base glass styles
           variant === 'default' && 'glass-card glass-texture',
           variant === 'aurora' && 'glass-aurora glass',
@@ -35,25 +38,23 @@ const GlassPanel = forwardRef<HTMLDivElement, GlassPanelProps>(
           variant === 'frosted' && 'glass-frosted glass-texture',
           variant === 'clear' && 'glass-clear glass',
           variant === 'crystal' && 'glass-crystal glass glass-depth',
-          
+
           // Depth variations
           depth === 'shallow' && 'shadow-md',
           depth === 'medium' && 'shadow-xl',
           depth === 'deep' && 'shadow-2xl',
-          
+
           // Interactive effects
           interactive && 'glass-interactive',
           shimmer && 'glass-shimmer',
-          
+
           className
         )}
         {...props}
       >
         {/* Content wrapper with z-index to stay above effects */}
-        <div className="relative z-10">
-          {children}
-        </div>
-        
+        <div className="relative z-10">{children}</div>
+
         {/* Additional glass layers for depth */}
         {depth === 'deep' && (
           <>

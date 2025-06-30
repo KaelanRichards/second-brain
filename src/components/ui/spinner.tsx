@@ -23,15 +23,19 @@ const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
         aria-label="Loading"
         {...props}
       >
-        <div className={cn(
-          'absolute animate-spin rounded-full border-2 border-accent/20',
-          'h-full w-full'
-        )} />
-        <div className={cn(
-          'absolute animate-spin rounded-full border-2 border-transparent border-t-accent',
-          'h-full w-full',
-          'animation-delay-150'
-        )} />
+        <div
+          className={cn(
+            'absolute animate-spin rounded-full border-2 border-accent/20',
+            'h-full w-full'
+          )}
+        />
+        <div
+          className={cn(
+            'absolute animate-spin rounded-full border-2 border-transparent border-t-accent',
+            'h-full w-full',
+            'animation-delay-150'
+          )}
+        />
         <span className="sr-only">Loading...</span>
       </div>
     );

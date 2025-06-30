@@ -9,14 +9,17 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
 }
 
 const Text = forwardRef<HTMLParagraphElement, TextProps>(
-  ({ 
-    className, 
-    as: Component = 'p', 
-    size = 'base', 
-    weight = 'normal',
-    color = 'default',
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      as: Component = 'p',
+      size = 'base',
+      weight = 'normal',
+      color = 'default',
+      ...props
+    },
+    ref
+  ) => {
     return (
       <Component
         className={cn(
@@ -30,7 +33,7 @@ const Text = forwardRef<HTMLParagraphElement, TextProps>(
             'text-2xl': size === '2xl',
             'text-3xl': size === '3xl',
           },
-          
+
           // Weight
           {
             'font-normal': weight === 'normal',
@@ -38,13 +41,13 @@ const Text = forwardRef<HTMLParagraphElement, TextProps>(
             'font-semibold': weight === 'semibold',
             'font-bold': weight === 'bold',
           },
-          
+
           // Color
           {
             'text-text': color === 'default',
             'text-text-muted': color === 'muted',
           },
-          
+
           className
         )}
         ref={ref}

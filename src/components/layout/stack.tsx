@@ -10,15 +10,18 @@ interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Stack = forwardRef<HTMLDivElement, StackProps>(
-  ({ 
-    className, 
-    direction = 'column', 
-    gap = 4,
-    align = 'stretch',
-    justify = 'start',
-    wrap = false,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      direction = 'column',
+      gap = 4,
+      align = 'stretch',
+      justify = 'start',
+      wrap = false,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <div
         ref={ref}

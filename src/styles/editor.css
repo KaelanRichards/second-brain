@@ -1,0 +1,27 @@
+/* Focus mode styles */
+.focus-mode .cm-editor {
+  max-width: 48rem;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.focus-mode .cm-content {
+  padding: 3rem 2rem;
+}
+
+.focus-mode .cm-line {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.focus-mode .cm-line:has(.cm-cursor),
+.focus-mode .cm-activeLine {
+  opacity: 1;
+}
+
+/* Hide UI elements in focus mode */
+.focus-mode-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}

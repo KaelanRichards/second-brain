@@ -6,7 +6,7 @@ type Theme = 'light' | 'dark' | 'system';
 interface ThemeState {
   theme: Theme;
   isDark: boolean;
-  
+
   // Actions
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
@@ -19,7 +19,7 @@ const getSystemTheme = (): boolean => {
 
 const applyTheme = (isDark: boolean) => {
   if (typeof document === 'undefined') return;
-  
+
   if (isDark) {
     document.documentElement.classList.add('dark');
   } else {

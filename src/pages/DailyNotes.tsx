@@ -1,11 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNotesStore } from '@/stores/notes-store';
-import { DailyNoteEditor, DailyNoteEditorRef } from '@/components/editor/daily-note-editor';
-import { NotesSidebar } from '@/components/sidebar/notes-sidebar';
+import { useEffect, useRef, useState } from 'react';
 import { CommandPalette } from '@/components/command-palette/command-palette';
+import { DailyNoteEditor, type DailyNoteEditorRef } from '@/components/editor/daily-note-editor';
+import { NotesSidebar } from '@/components/sidebar/notes-sidebar';
 
 export function DailyNotes() {
-  const { currentDate } = useNotesStore();
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const editorRef = useRef<DailyNoteEditorRef>(null);
 
@@ -17,7 +15,7 @@ export function DailyNotes() {
         e.preventDefault();
         setCommandPaletteOpen(true);
       }
-      
+
       // Close command palette on Escape
       if (e.key === 'Escape' && commandPaletteOpen) {
         setCommandPaletteOpen(false);
@@ -32,18 +30,18 @@ export function DailyNotes() {
     <div className="h-screen flex">
       {/* Sidebar */}
       <NotesSidebar />
-      
+
       {/* Main Editor */}
       <main className="flex-1 overflow-hidden">
         <div className="h-full p-12">
           <div className="max-w-3xl mx-auto h-full">
-            <DailyNoteEditor ref={editorRef} date={currentDate} />
+            <DailyNoteEditor ref={editorRef} />
           </div>
         </div>
       </main>
-      
+
       {/* Command Palette */}
-      <CommandPalette 
+      <CommandPalette
         isOpen={commandPaletteOpen}
         onClose={() => setCommandPaletteOpen(false)}
         onFocusModeToggle={() => editorRef.current?.toggleFocusMode()}

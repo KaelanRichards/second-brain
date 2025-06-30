@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
-import { markdownToHtml } from '@/utils/markdown';
 import { cn } from '@/lib/utils';
+import { markdownToHtml } from '@/utils/markdown';
 
 interface MarkdownPreviewProps {
   content: string;
-  fontSize: number;
-  lineHeight: number;
+  fontSize?: number;
+  lineHeight?: number;
   className?: string;
 }
 
-export function MarkdownPreview({ content, fontSize, lineHeight, className }: MarkdownPreviewProps) {
+export function MarkdownPreview({
+  content,
+  fontSize = 16,
+  lineHeight = 1.8,
+  className,
+}: MarkdownPreviewProps) {
   const [html, setHtml] = useState('');
 
   useEffect(() => {
@@ -17,12 +22,8 @@ export function MarkdownPreview({ content, fontSize, lineHeight, className }: Ma
   }, [content]);
 
   return (
-    <div 
-      className={cn(
-        'prose prose-invert max-w-none',
-        'text-enhanced writing-focus',
-        className
-      )}
+    <div
+      className={cn('prose prose-invert max-w-none', 'text-enhanced writing-focus', className)}
       style={{
         fontSize: `${fontSize}px`,
         lineHeight: lineHeight,
@@ -30,16 +31,14 @@ export function MarkdownPreview({ content, fontSize, lineHeight, className }: Ma
       }}
     >
       {content.trim() === '' ? (
-        <div className="text-text-muted/50 italic">
-          Start writing to see the preview...
-        </div>
+        <div className="text-text-muted/50 italic">Start writing to see the preview...</div>
       ) : (
-        <div 
-          dangerouslySetInnerHTML={{ __html: html }}
-          className="markdown-content"
-        />
+        <>
+          {/* biome-ignore lint/security/noDangerouslySetInnerHTML: HTML is sanitized with DOMPurify */}
+          <div dangerouslySetInnerHTML={{ __html: html }} className="markdown-content" />
+        </>
       )}
-      
+
       <style>{`
         .markdown-content h1 {
           font-size: 2em;

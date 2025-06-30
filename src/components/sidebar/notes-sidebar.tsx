@@ -1,13 +1,34 @@
-import { ChevronLeft, ChevronRight, Calendar, Moon, Sun, Monitor } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Monitor, Moon, Sun } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useNotesStore } from '@/stores/notes-store';
 import { useThemeStore } from '@/stores/theme-store';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import type { NoteMetadata } from '@/types/note';
 
 export function NotesSidebar() {
-  const { currentDate, setCurrentDate, getAllNotes } = useNotesStore();
+  const { currentDate, setCurrentDate, getAllNotes, isLoading: isSaving } = useNotesStore();
   const { theme, toggleTheme } = useThemeStore();
-  const notes = getAllNotes();
+  const [notes, setNotes] = useState<NoteMetadata[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState(Date.now());
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      setIsLoading(true);
+      try {
+        const allNotes = await getAllNotes();
+        setNotes(allNotes);
+      } catch (error) {
+        console.error('Failed to load notes:', error);
+        setNotes([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadNotes();
+  }, []); // Only load once on mount
 
   const navigateDate = (direction: 'prev' | 'next') => {
     const current = new Date(currentDate + 'T00:00:00');
@@ -41,17 +62,17 @@ export function NotesSidebar() {
     const date = new Date(dateStr + 'T00:00:00');
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     if (date.getTime() === today.getTime()) return 'Today';
     if (date.getTime() === yesterday.getTime()) return 'Yesterday';
-    
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
-      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
     });
   };
 
@@ -60,31 +81,16 @@ export function NotesSidebar() {
       {/* Navigation Controls */}
       <div className="p-4 border-b border-white/10">
         <div className="flex items-center justify-between mb-4">
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => navigateDate('prev')}
-            className="p-2"
-          >
+          <Button size="sm" variant="ghost" onClick={() => navigateDate('prev')} className="p-2">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={goToToday}
-            className="flex items-center gap-2"
-          >
+
+          <Button size="sm" variant="ghost" onClick={goToToday} className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
             Today
           </Button>
-          
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => navigateDate('next')}
-            className="p-2"
-          >
+
+          <Button size="sm" variant="ghost" onClick={() => navigateDate('next')} className="p-2">
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -92,8 +98,11 @@ export function NotesSidebar() {
 
       {/* Notes List */}
       <div className="flex-1 overflow-y-auto p-2">
-        <div className="space-y-1">
-          {notes.map((note) => (
+        {isLoading ? (
+          <div className="text-center text-text-muted py-4">Loading notes...</div>
+        ) : (
+          <div className="space-y-1">
+            {notes.map((note) => (
             <button
               key={note.id}
               onClick={() => setCurrentDate(note.date)}
@@ -105,13 +114,12 @@ export function NotesSidebar() {
             >
               <div className="text-sm">{formatDateForList(note.date)}</div>
               {note.preview && (
-                <div className="text-xs text-text-muted mt-1 line-clamp-2">
-                  {note.preview}
-                </div>
+                <div className="text-xs text-text-muted mt-1 line-clamp-2">{note.preview}</div>
               )}
             </button>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Stats & Theme Toggle */}

@@ -18,20 +18,32 @@ export const api = {
     async updateProfile(data: UpdateUserDto) {
       return invoke<User>('update_user_profile', { data });
     },
-    
+
     async createUser(email: string, name: string) {
       return invoke<User>('create_user', { email, name });
     },
   },
 
-  // File commands
-  file: {
-    async readFile(path: string) {
-      return invoke<string>('read_file', { path });
+  // Note commands
+  notes: {
+    async saveNote(date: string, content: string) {
+      return invoke<Note>('save_note', { date, content });
     },
 
-    async writeFile(path: string, content: string) {
-      return invoke<void>('write_file', { path, content });
+    async getNote(date: string) {
+      return invoke<Note | null>('get_note', { date });
+    },
+
+    async deleteNote(date: string) {
+      return invoke<void>('delete_note', { date });
+    },
+
+    async getAllNotes() {
+      return invoke<NoteMetadata[]>('get_all_notes');
+    },
+
+    async searchNotes(query: string) {
+      return invoke<NoteMetadata[]>('search_notes', { query });
     },
   },
 };
@@ -54,4 +66,21 @@ export interface User {
 export interface UpdateUserDto {
   name?: string;
   email?: string;
+}
+
+export interface Note {
+  id: string;
+  date: string;
+  content: string;
+  wordCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NoteMetadata {
+  id: string;
+  date: string;
+  wordCount: number;
+  preview: string;
+  updatedAt: string;
 }

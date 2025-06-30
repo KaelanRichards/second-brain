@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotesStore } from '@/stores/notes-store';
 
 export interface AutoSaveHook {
@@ -7,16 +7,12 @@ export interface AutoSaveHook {
   saveNow: () => void;
 }
 
-export function useAutoSave(
-  content: string, 
-  date: string, 
-  delay: number = 300
-): AutoSaveHook {
+export function useAutoSave(content: string, date: string, delay: number = 300): AutoSaveHook {
   const { saveNote } = useNotesStore();
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const saveTimeoutRef = useRef<number>();
-  
+
   const saveNow = useCallback(() => {
     if (content.trim()) {
       setIsSaving(true);
@@ -30,28 +26,28 @@ export function useAutoSave(
       }
     }
   }, [content, date, saveNote]);
-  
+
   useEffect(() => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
-    
+
     if (content.trim() === '') {
       setIsSaving(false);
       return;
     }
-    
+
     setIsSaving(true);
     saveTimeoutRef.current = window.setTimeout(() => {
       saveNow();
     }, delay);
-    
+
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
     };
   }, [content, date, delay, saveNow]);
-  
+
   return { isSaving, lastSaved, saveNow };
 }

@@ -16,10 +16,7 @@ const ListItem = forwardRef<HTMLLIElement, React.HTMLAttributes<HTMLLIElement>>(
   ({ className, ...props }, ref) => (
     <li
       ref={ref}
-      className={cn(
-        'px-4 py-3 transition-colors hover:bg-surface',
-        className
-      )}
+      className={cn('px-4 py-3 transition-colors hover:bg-surface', className)}
       {...props}
     />
   )
@@ -30,10 +27,7 @@ const ListHeader = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        'flex items-center space-x-2 text-sm font-medium text-text-muted',
-        className
-      )}
+      className={cn('flex items-center space-x-2 text-sm font-medium text-text-muted', className)}
       {...props}
     />
   )
@@ -42,11 +36,7 @@ ListHeader.displayName = 'ListHeader';
 
 const ListContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('mt-1 text-base text-text', className)}
-      {...props}
-    />
+    <div ref={ref} className={cn('mt-1 text-base text-text', className)} {...props} />
   )
 );
 ListContent.displayName = 'ListContent';

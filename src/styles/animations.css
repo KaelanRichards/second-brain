@@ -24,7 +24,8 @@
 
   /* Subtle bounce */
   @keyframes bounce-subtle {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
@@ -55,7 +56,8 @@
 
   /* Glow pulse */
   @keyframes glow-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -133,7 +135,7 @@
 
   /* Subtle grain texture */
   .texture-grain::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;

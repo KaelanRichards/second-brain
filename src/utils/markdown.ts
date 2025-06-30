@@ -1,6 +1,18 @@
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
+
 // Optimized markdown processor for better performance
 export interface MarkdownToken {
-  type: 'text' | 'heading' | 'bold' | 'italic' | 'code' | 'link' | 'list' | 'blockquote' | 'line-break';
+  type:
+    | 'text'
+    | 'heading'
+    | 'bold'
+    | 'italic'
+    | 'code'
+    | 'link'
+    | 'list'
+    | 'blockquote'
+    | 'line-break';
   content: string;
   level?: number; // for headings
   start: number;
@@ -18,12 +30,14 @@ const REGEX_CACHE = {
 export function tokenizeMarkdown(text: string): MarkdownToken[] {
   // Skip tokenization for very short text (performance optimization)
   if (text.length < 3) {
-    return [{
-      type: 'text',
-      content: text,
-      start: 0,
-      end: text.length
-    }];
+    return [
+      {
+        type: 'text',
+        content: text,
+        start: 0,
+        end: text.length,
+      },
+    ];
   }
 
   const tokens: MarkdownToken[] = [];
@@ -33,29 +47,35 @@ export function tokenizeMarkdown(text: string): MarkdownToken[] {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (!line) continue;
-    
+
     const lineStart = currentPos;
-    
+
     // Skip empty lines
     if (line.length === 0) {
       tokens.push({
         type: 'line-break',
         content: line,
         start: lineStart,
-        end: lineStart
+        end: lineStart,
       });
       currentPos += 1; // +1 for \n
       continue;
     }
 
     // Fast path for plain text (no markdown syntax)
-    if (!line.includes('#') && !line.includes('*') && !line.includes('`') && 
-        !line.includes('[') && !line.includes('>') && !line.includes('-')) {
+    if (
+      !line.includes('#') &&
+      !line.includes('*') &&
+      !line.includes('`') &&
+      !line.includes('[') &&
+      !line.includes('>') &&
+      !line.includes('-')
+    ) {
       tokens.push({
         type: 'text',
         content: line,
         start: lineStart,
-        end: lineStart + line.length
+        end: lineStart + line.length,
       });
       currentPos += line.length + 1;
       continue;
@@ -69,7 +89,7 @@ export function tokenizeMarkdown(text: string): MarkdownToken[] {
         content: line,
         level: headingMatch[1]?.length || 1,
         start: lineStart,
-        end: lineStart + line.length
+        end: lineStart + line.length,
       });
       currentPos += line.length + 1;
       continue;
@@ -81,7 +101,7 @@ export function tokenizeMarkdown(text: string): MarkdownToken[] {
         type: 'blockquote',
         content: line,
         start: lineStart,
-        end: lineStart + line.length
+        end: lineStart + line.length,
       });
       currentPos += line.length + 1;
       continue;
@@ -93,7 +113,7 @@ export function tokenizeMarkdown(text: string): MarkdownToken[] {
         type: 'list',
         content: line,
         start: lineStart,
-        end: lineStart + line.length
+        end: lineStart + line.length,
       });
       currentPos += line.length + 1;
       continue;
@@ -104,7 +124,7 @@ export function tokenizeMarkdown(text: string): MarkdownToken[] {
       const inlineTokens = tokenizeInline(line, lineStart);
       tokens.push(...inlineTokens);
     }
-    
+
     currentPos += line.length + 1;
   }
 
@@ -115,12 +135,14 @@ export function tokenizeMarkdown(text: string): MarkdownToken[] {
 function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
   // Fast path for text without inline formatting
   if (!text.includes('*') && !text.includes('`') && !text.includes('[')) {
-    return [{
-      type: 'text',
-      content: text,
-      start: lineStart,
-      end: lineStart + text.length
-    }];
+    return [
+      {
+        type: 'text',
+        content: text,
+        start: lineStart,
+        end: lineStart + text.length,
+      },
+    ];
   }
 
   const tokens: MarkdownToken[] = [];
@@ -128,7 +150,6 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
   const textLength = text.length;
 
   while (currentPos < textLength) {
-    
     // Look for code first (highest priority)
     if (text[currentPos] === '`') {
       const codeEnd = text.indexOf('`', currentPos + 1);
@@ -139,18 +160,18 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
             type: 'text',
             content: text.slice(0, currentPos),
             start: lineStart,
-            end: lineStart + currentPos
+            end: lineStart + currentPos,
           });
         }
-        
+
         // Add code token
         tokens.push({
           type: 'code',
           content: text.slice(currentPos, codeEnd + 1),
           start: lineStart + currentPos,
-          end: lineStart + codeEnd + 1
+          end: lineStart + codeEnd + 1,
         });
-        
+
         // Continue from after the code
         const remaining = text.slice(codeEnd + 1);
         if (remaining) {
@@ -160,7 +181,7 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
         return tokens;
       }
     }
-    
+
     // Look for bold (**text**)
     if (text.startsWith('**', currentPos)) {
       const boldEnd = text.indexOf('**', currentPos + 2);
@@ -170,17 +191,17 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
             type: 'text',
             content: text.slice(0, currentPos),
             start: lineStart,
-            end: lineStart + currentPos
+            end: lineStart + currentPos,
           });
         }
-        
+
         tokens.push({
           type: 'bold',
           content: text.slice(currentPos, boldEnd + 2),
           start: lineStart + currentPos,
-          end: lineStart + boldEnd + 2
+          end: lineStart + boldEnd + 2,
         });
-        
+
         const remaining = text.slice(boldEnd + 2);
         if (remaining) {
           const remainingTokens = tokenizeInline(remaining, lineStart + boldEnd + 2);
@@ -189,7 +210,7 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
         return tokens;
       }
     }
-    
+
     // Look for italic (*text*) - but not if it's part of **
     if (text[currentPos] === '*' && !text.startsWith('**', currentPos)) {
       const italicEnd = text.indexOf('*', currentPos + 1);
@@ -199,17 +220,17 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
             type: 'text',
             content: text.slice(0, currentPos),
             start: lineStart,
-            end: lineStart + currentPos
+            end: lineStart + currentPos,
           });
         }
-        
+
         tokens.push({
           type: 'italic',
           content: text.slice(currentPos, italicEnd + 1),
           start: lineStart + currentPos,
-          end: lineStart + italicEnd + 1
+          end: lineStart + italicEnd + 1,
         });
-        
+
         const remaining = text.slice(italicEnd + 1);
         if (remaining) {
           const remainingTokens = tokenizeInline(remaining, lineStart + italicEnd + 1);
@@ -218,7 +239,7 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
         return tokens;
       }
     }
-    
+
     // Look for links [text](url)
     if (text[currentPos] === '[') {
       const linkTextEnd = text.indexOf(']', currentPos + 1);
@@ -230,17 +251,17 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
               type: 'text',
               content: text.slice(0, currentPos),
               start: lineStart,
-              end: lineStart + currentPos
+              end: lineStart + currentPos,
             });
           }
-          
+
           tokens.push({
             type: 'link',
             content: text.slice(currentPos, linkEnd + 1),
             start: lineStart + currentPos,
-            end: lineStart + linkEnd + 1
+            end: lineStart + linkEnd + 1,
           });
-          
+
           const remaining = text.slice(linkEnd + 1);
           if (remaining) {
             const remainingTokens = tokenizeInline(remaining, lineStart + linkEnd + 1);
@@ -250,18 +271,26 @@ function tokenizeInline(text: string, lineStart: number): MarkdownToken[] {
         }
       }
     }
-    
+
     currentPos++;
   }
 
   // No formatting found, return as text
-  return [{
-    type: 'text',
-    content: text,
-    start: lineStart,
-    end: lineStart + text.length
-  }];
+  return [
+    {
+      type: 'text',
+      content: text,
+      start: lineStart,
+      end: lineStart + text.length,
+    },
+  ];
 }
+
+// Configure marked options
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
 
 // Optimized markdown to HTML converter with caching
 const HTML_CACHE = new Map<string, string>();
@@ -273,42 +302,33 @@ export function markdownToHtml(text: string): string {
     return HTML_CACHE.get(text)!;
   }
 
-  let html = text;
-
-  // Process in order of complexity (simple replacements first)
-  // Headers (must be done in reverse order to avoid conflicts)
-  html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
-
-  // Code blocks (process first to avoid conflicts with other formatting)
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // Bold (process before italic to avoid conflicts)
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  
-  // Italic (after bold)
-  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-
-  // Links
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-  // Lists (improved pattern)
-  html = html.replace(/^[-*+] (.+)/gm, '<li>$1</li>');
-  html = html.replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>');
-
-  // Numbered lists
-  html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
-  html = html.replace(/((?:<li>.*<\/li>\s*)+)/g, '<ol>$1</ol>');
-
-  // Blockquotes
-  html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
-
-  // Paragraphs (wrap non-html lines)
-  html = html.replace(/^(?!<[h1-6]|<ul|<ol|<blockquote|<li)(.+)$/gm, '<p>$1</p>');
-
-  // Line breaks
-  html = html.replace(/\n(?!<)/g, '<br>');
+  // Use marked to parse markdown and DOMPurify to sanitize
+  const rawHtml = marked.parse(text) as string;
+  const cleanHtml = DOMPurify.sanitize(rawHtml, {
+    ALLOWED_TAGS: [
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'p',
+      'br',
+      'strong',
+      'em',
+      'del',
+      'code',
+      'pre',
+      'blockquote',
+      'ul',
+      'ol',
+      'li',
+      'a',
+      'hr',
+    ],
+    ALLOWED_ATTR: ['href', 'target', 'rel'],
+    ALLOW_DATA_ATTR: false,
+  });
 
   // Cache the result (with size limit)
   if (HTML_CACHE.size >= MAX_CACHE_SIZE) {
@@ -317,9 +337,9 @@ export function markdownToHtml(text: string): string {
       HTML_CACHE.delete(firstKey);
     }
   }
-  HTML_CACHE.set(text, html);
+  HTML_CACHE.set(text, cleanHtml);
 
-  return html;
+  return cleanHtml;
 }
 
 // Get markdown formatting shortcuts

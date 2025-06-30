@@ -37,12 +37,13 @@ pnpm test -- path/to/test.spec.ts
 
 ### Frontend Architecture
 
-The frontend follows a modular, hook-based architecture:
+The frontend follows a modular architecture:
 
 1. **Editor System** (`/src/components/editor/`)
-   - Modular design with 8 specialized hooks
-   - Master orchestration via `use-unified-editor.ts`
-   - Each hook has single responsibility (e.g., formatting, selection, shortcuts)
+   - **CodeMirror 6** integration for rich text editing
+   - Custom glass morphism theme matching UI design
+   - Contextual floating toolbar for formatting
+   - Full markdown support with live preview
    - Auto-save with 300ms debounce
 
 2. **State Management**
@@ -81,10 +82,11 @@ Clean architecture with clear separation:
 
 ### Key Design Patterns
 
-1. **Command Pattern** - Extensible command system for editor actions
-2. **Hook Composition** - Small, focused hooks composed together
+1. **CodeMirror Extensions** - Modular editor features via CM6 extension system
+2. **Command Pattern** - Extensible command system for editor actions
 3. **Type-Safe IPC** - Tauri commands with full TypeScript types
 4. **Optimistic Updates** - UI updates before server confirmation
+5. **Glass Morphism UI** - Consistent translucent design with backdrop filters
 
 ## Important Context
 

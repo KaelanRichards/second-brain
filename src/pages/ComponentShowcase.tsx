@@ -1,24 +1,37 @@
 import { useState } from 'react';
 import { Container } from '@/components/layout/container';
 import { Stack } from '@/components/layout/stack';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Text } from '@/components/ui/text';
-import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Avatar } from '@/components/ui/avatar';
-import { List, ListItem, ListHeader, ListContent } from '@/components/ui/list';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { List, ListContent, ListHeader, ListItem } from '@/components/ui/list';
 import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { Switch } from '@/components/ui/switch';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Text } from '@/components/ui/text';
+import { Textarea } from '@/components/ui/textarea';
 
 export function ComponentShowcase() {
   const [checkboxChecked, setCheckboxChecked] = useState(false);
@@ -31,18 +44,24 @@ export function ComponentShowcase() {
     <Container size="lg" className="py-12">
       <Stack gap={12}>
         <Stack gap={2}>
-          <Text as="h1" size="3xl" weight="bold">Component Showcase</Text>
-          <Text className="text-text-muted">A comprehensive display of our design system components</Text>
+          <Text as="h1" size="3xl" weight="bold">
+            Component Showcase
+          </Text>
+          <Text className="text-text-muted">
+            A comprehensive display of our design system components
+          </Text>
         </Stack>
 
         <Stack gap={8}>
           <Card className="mb-8">
             <CardHeader>
-              <Text as="h2" size="2xl" weight="bold">Minimal Glass Design System</Text>
+              <Text as="h2" size="2xl" weight="bold">
+                Minimal Glass Design System
+              </Text>
             </CardHeader>
             <CardContent>
               <Text className="text-text-muted">
-                A clean, minimal approach to glassmorphism. Every element uses subtle transparency 
+                A clean, minimal approach to glassmorphism. Every element uses subtle transparency
                 and blur effects to create depth while maintaining clarity and readability.
               </Text>
             </CardContent>
@@ -50,7 +69,9 @@ export function ComponentShowcase() {
 
           <Card>
             <CardHeader>
-              <Text as="h2" size="xl" weight="semibold">Buttons</Text>
+              <Text as="h2" size="xl" weight="semibold">
+                Buttons
+              </Text>
             </CardHeader>
             <CardContent>
               <Stack direction="row" gap={4} wrap>
@@ -66,7 +87,9 @@ export function ComponentShowcase() {
 
           <Card>
             <CardHeader>
-              <Text as="h2" size="xl" weight="semibold">Form Elements</Text>
+              <Text as="h2" size="xl" weight="semibold">
+                Form Elements
+              </Text>
             </CardHeader>
             <CardContent>
               <Stack gap={6}>
@@ -81,8 +104,8 @@ export function ComponentShowcase() {
                 </Stack>
 
                 <Stack direction="row" gap={4} align="center">
-                  <Checkbox 
-                    id="checkbox" 
+                  <Checkbox
+                    id="checkbox"
                     checked={checkboxChecked}
                     onCheckedChange={(checked) => setCheckboxChecked(!!checked)}
                   />
@@ -106,11 +129,7 @@ export function ComponentShowcase() {
                 </Stack>
 
                 <Stack direction="row" gap={4} align="center">
-                  <Switch 
-                    id="switch"
-                    checked={switchChecked}
-                    onCheckedChange={setSwitchChecked}
-                  />
+                  <Switch id="switch" checked={switchChecked} onCheckedChange={setSwitchChecked} />
                   <Label htmlFor="switch">Enable notifications</Label>
                 </Stack>
 
@@ -133,7 +152,9 @@ export function ComponentShowcase() {
 
           <Card>
             <CardHeader>
-              <Text as="h2" size="xl" weight="semibold">Tabs</Text>
+              <Text as="h2" size="xl" weight="semibold">
+                Tabs
+              </Text>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="tab1">
@@ -157,7 +178,9 @@ export function ComponentShowcase() {
 
           <Card>
             <CardHeader>
-              <Text as="h2" size="xl" weight="semibold">Data Display</Text>
+              <Text as="h2" size="xl" weight="semibold">
+                Data Display
+              </Text>
             </CardHeader>
             <CardContent>
               <Stack gap={6}>
@@ -223,7 +246,9 @@ export function ComponentShowcase() {
 
           <Card>
             <CardHeader>
-              <Text as="h2" size="xl" weight="semibold">Feedback</Text>
+              <Text as="h2" size="xl" weight="semibold">
+                Feedback
+              </Text>
             </CardHeader>
             <CardContent>
               <Stack gap={6}>
@@ -241,8 +266,12 @@ export function ComponentShowcase() {
                   <Text weight="semibold">Progress</Text>
                   <Progress value={progress} />
                   <Stack direction="row" gap={2}>
-                    <Button size="sm" onClick={() => setProgress(Math.max(0, progress - 10))}>-10</Button>
-                    <Button size="sm" onClick={() => setProgress(Math.min(100, progress + 10))}>+10</Button>
+                    <Button size="sm" onClick={() => setProgress(Math.max(0, progress - 10))}>
+                      -10
+                    </Button>
+                    <Button size="sm" onClick={() => setProgress(Math.min(100, progress + 10))}>
+                      +10
+                    </Button>
                   </Stack>
                 </Stack>
 

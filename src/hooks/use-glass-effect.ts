@@ -8,9 +8,10 @@ export function useGlassEffect<T extends HTMLElement>() {
     if (!element) return;
 
     // Check if backdrop-filter is supported
-    const supportsBackdrop = CSS.supports('backdrop-filter', 'blur(4px)') || 
-                           CSS.supports('-webkit-backdrop-filter', 'blur(4px)');
-    
+    const supportsBackdrop =
+      CSS.supports('backdrop-filter', 'blur(4px)') ||
+      CSS.supports('-webkit-backdrop-filter', 'blur(4px)');
+
     if (!supportsBackdrop) {
       element.style.setProperty('--glass-blur', '0px');
       element.classList.add('glass-fallback');
@@ -19,10 +20,10 @@ export function useGlassEffect<T extends HTMLElement>() {
     // Interactive highlight tracking
     const handleMove = (e: MouseEvent | TouchEvent) => {
       const rect = element.getBoundingClientRect();
-      
+
       let clientX: number;
       let clientY: number;
-      
+
       if ('touches' in e && e.touches.length > 0) {
         const touch = e.touches[0];
         if (touch) {
@@ -37,10 +38,10 @@ export function useGlassEffect<T extends HTMLElement>() {
       } else {
         return; // Exit if we can't get coordinates
       }
-      
+
       const x = ((clientX - rect.left) / rect.width) * 100;
       const y = ((clientY - rect.top) / rect.height) * 100;
-      
+
       element.style.setProperty('--glass-x', `${x}%`);
       element.style.setProperty('--glass-y', `${y}%`);
     };

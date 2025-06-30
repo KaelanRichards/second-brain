@@ -29,10 +29,7 @@ const HeaderContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        'flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8',
-        className
-      )}
+      className={cn('flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8', className)}
       {...props}
     />
   )

@@ -4,7 +4,7 @@ import {
   useMutation,
   useQuery,
 } from '@tanstack/react-query';
-import { invoke, type InvokeArgs } from '@tauri-apps/api/core';
+import { type InvokeArgs, invoke } from '@tauri-apps/api/core';
 
 // Custom hook for Tauri queries
 export function useTauriQuery<T>(

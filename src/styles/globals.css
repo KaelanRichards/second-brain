@@ -1,5 +1,6 @@
-@import './design-tokens.css';
-@import './glass-minimal.css';
+@import "./design-tokens.css";
+@import "./glass-minimal-performance.css";
+@import "./editor.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,13 +10,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   body {
     @apply bg-base text-text;
     font-family: var(--font-sans);
     line-height: var(--leading-normal);
   }
-  
+
   /* Focus styles */
   :focus-visible {
     @apply outline-none ring-2 ring-accent/50 ring-offset-2 ring-offset-transparent;
@@ -32,7 +33,7 @@
   .animation-delay-6000 {
     animation-delay: 6s;
   }
-  
+
   /* Text utilities for notes */
   .line-clamp-2 {
     display: -webkit-box;
@@ -40,7 +41,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -53,7 +54,10 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1,
+      "calt" 1;
   }
 
   /* Writing-focused improvements */
@@ -72,4 +76,3 @@
     background-color: hsl(var(--color-accent) / 0.2);
   }
 }
-

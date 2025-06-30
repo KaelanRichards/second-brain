@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
-import { Search, Calendar, FileText, Moon, Sun, Monitor, Focus, Type, Eye } from 'lucide-react';
+import { Calendar, Eye, FileText, Focus, Monitor, Moon, Search, Sun, Type } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useNotesStore } from '@/stores/notes-store';
 import { useThemeStore } from '@/stores/theme-store';
+import type { NoteMetadata } from '@/types/note';
 
 interface Command {
   id: string;
@@ -21,14 +22,33 @@ interface CommandPaletteProps {
   onPreviewToggle?: () => void;
 }
 
-export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeChange, onPreviewToggle }: CommandPaletteProps) {
+export function CommandPalette({
+  isOpen,
+  onClose,
+  onFocusModeToggle,
+  onFontSizeChange,
+  onPreviewToggle,
+}: CommandPaletteProps) {
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [recentNotes, setRecentNotes] = useState<NoteMetadata[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  
+
   const { setCurrentDate, getAllNotes } = useNotesStore();
   const { setTheme } = useThemeStore();
+
+  // Load recent notes when palette opens
+  useEffect(() => {
+    if (isOpen) {
+      getAllNotes()
+        .then((notes) => setRecentNotes(notes.slice(0, 5)))
+        .catch((error) => {
+          console.error('Failed to load recent notes:', error);
+          setRecentNotes([]);
+        });
+    }
+  }, [isOpen, getAllNotes]);
 
   // Helper to navigate to specific dates
   const navigateToDate = (offset: number) => {
@@ -47,7 +67,7 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
     {
       id: 'today',
       title: 'Go to Today',
-      description: 'Open today\'s daily note',
+      description: "Open today's daily note",
       icon: <Calendar className="h-4 w-4" />,
       action: () => navigateToDate(0),
       keywords: ['today', 'now'],
@@ -55,7 +75,7 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
     {
       id: 'yesterday',
       title: 'Go to Yesterday',
-      description: 'Open yesterday\'s daily note',
+      description: "Open yesterday's daily note",
       icon: <Calendar className="h-4 w-4" />,
       action: () => navigateToDate(-1),
       keywords: ['yesterday', 'prev', 'previous'],
@@ -63,7 +83,7 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
     {
       id: 'tomorrow',
       title: 'Go to Tomorrow',
-      description: 'Open tomorrow\'s daily note',
+      description: "Open tomorrow's daily note",
       icon: <Calendar className="h-4 w-4" />,
       action: () => navigateToDate(1),
       keywords: ['tomorrow', 'next'],
@@ -159,13 +179,12 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
   ];
 
   // Add recent notes as commands
-  const recentNotes = getAllNotes().slice(0, 5);
-  const noteCommands: Command[] = recentNotes.map(note => ({
+  const noteCommands: Command[] = recentNotes.map((note: NoteMetadata) => ({
     id: `note-${note.id}`,
-    title: `Note: ${new Date(note.date).toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    title: `Note: ${new Date(note.date).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
     })}`,
     description: note.preview,
     icon: <FileText className="h-4 w-4" />,
@@ -179,10 +198,11 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
 
   // Filter commands based on search
   const filteredCommands = search
-    ? allCommands.filter(cmd => 
-        cmd.title.toLowerCase().includes(search.toLowerCase()) ||
-        cmd.description?.toLowerCase().includes(search.toLowerCase()) ||
-        cmd.keywords?.some(k => k.toLowerCase().includes(search.toLowerCase()))
+    ? allCommands.filter(
+        (cmd) =>
+          cmd.title.toLowerCase().includes(search.toLowerCase()) ||
+          cmd.description?.toLowerCase().includes(search.toLowerCase()) ||
+          cmd.keywords?.some((k) => k.toLowerCase().includes(search.toLowerCase()))
       )
     : allCommands;
 
@@ -194,11 +214,11 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(i => (i + 1) % filteredCommands.length);
+          setSelectedIndex((i) => (i + 1) % filteredCommands.length);
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex(i => (i - 1 + filteredCommands.length) % filteredCommands.length);
+          setSelectedIndex((i) => (i - 1 + filteredCommands.length) % filteredCommands.length);
           break;
         case 'Enter':
           e.preventDefault();
@@ -239,11 +259,8 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
   return (
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50" onClick={onClose} />
+
       {/* Command Palette */}
       <div className="fixed inset-x-0 top-[20vh] mx-auto max-w-2xl z-50 px-4">
         <div className="glass-surface rounded-2xl overflow-hidden shadow-2xl">
@@ -259,16 +276,11 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
               className="w-full bg-transparent px-12 py-4 text-lg focus:outline-none"
             />
           </div>
-          
+
           {/* Commands List */}
-          <div 
-            ref={listRef}
-            className="max-h-[50vh] overflow-y-auto border-t border-white/10"
-          >
+          <div ref={listRef} className="max-h-[50vh] overflow-y-auto border-t border-white/10">
             {filteredCommands.length === 0 ? (
-              <div className="px-4 py-8 text-center text-text-muted">
-                No commands found
-              </div>
+              <div className="px-4 py-8 text-center text-text-muted">No commands found</div>
             ) : (
               filteredCommands.map((command, index) => (
                 <button
@@ -285,9 +297,7 @@ export function CommandPalette({ isOpen, onClose, onFocusModeToggle, onFontSizeC
                   <div className="flex-1 min-w-0">
                     <div className="font-medium">{command.title}</div>
                     {command.description && (
-                      <div className="text-sm text-text-muted truncate">
-                        {command.description}
-                      </div>
+                      <div className="text-sm text-text-muted truncate">{command.description}</div>
                     )}
                   </div>
                 </button>

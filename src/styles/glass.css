@@ -106,16 +106,15 @@
     position: relative;
     backdrop-filter: blur(10px) saturate(120%);
     -webkit-backdrop-filter: blur(10px) saturate(120%);
-    background: 
-      /* Subtle vertical gradient */
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.08) 0%,
-        rgba(255, 255, 255, 0.04) 100%
-      );
+    /* Subtle vertical gradient */
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 
-      /* Clean elevation */
+    /* Clean elevation */
+    box-shadow:
       0 4px 24px rgba(0, 0, 0, 0.06),
       /* Subtle top highlight */
       inset 0 1px 1px rgba(255, 255, 255, 0.1);
@@ -126,40 +125,37 @@
   .glass-card:hover {
     backdrop-filter: blur(12px) saturate(140%);
     -webkit-backdrop-filter: blur(12px) saturate(140%);
-    background: 
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
     border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.08),
       inset 0 1px 1px rgba(255, 255, 255, 0.15);
   }
 
   .dark .glass-card {
-    background: 
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.05) 0%,
-        rgba(255, 255, 255, 0.02) 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 
+    box-shadow:
       0 4px 24px rgba(0, 0, 0, 0.2),
       inset 0 1px 1px rgba(255, 255, 255, 0.05);
   }
 
   .dark .glass-card:hover {
-    background: 
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.07) 0%,
-        rgba(255, 255, 255, 0.03) 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
     border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.25),
       inset 0 1px 1px rgba(255, 255, 255, 0.08);
   }
@@ -169,22 +165,21 @@
     position: relative;
     backdrop-filter: blur(12px) saturate(200%) brightness(1.05);
     -webkit-backdrop-filter: blur(12px) saturate(200%) brightness(1.05);
-    background: 
-      /* Top edge highlight */
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.25) 0%,
-        rgba(255, 255, 255, 0.15) 2%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.05) 100%
-      );
+    /* Top edge highlight */
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.15) 2%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
     border: 1px solid;
     border-top-color: rgba(255, 255, 255, 0.4);
     border-right-color: rgba(255, 255, 255, 0.2);
     border-bottom-color: rgba(255, 255, 255, 0.15);
     border-left-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 
-      /* Outer glow */
+    /* Outer glow */
+    box-shadow:
       0 0 20px 0 rgba(255, 255, 255, 0.1),
       /* Drop shadow */
       0 4px 16px 0 rgba(0, 0, 0, 0.1),
@@ -216,16 +211,15 @@
   }
 
   .glass-button:hover {
-    background: 
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 255, 255, 0.2) 2%,
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.08) 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.2) 2%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.08) 100%
+    );
     border-top-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 
+    box-shadow:
       0 0 30px 0 rgba(255, 255, 255, 0.2),
       0 8px 25px 0 rgba(0, 0, 0, 0.15),
       inset 0 2px 6px 0 rgba(255, 255, 255, 0.25),
@@ -238,7 +232,7 @@
   }
 
   .glass-button:active {
-    box-shadow: 
+    box-shadow:
       0 0 15px 0 rgba(255, 255, 255, 0.1),
       0 2px 8px 0 rgba(0, 0, 0, 0.1),
       inset 0 1px 2px 0 rgba(255, 255, 255, 0.15),
@@ -261,12 +255,7 @@
   /* Aurora Glass - Animated gradient effect */
   .glass-aurora {
     position: relative;
-    background: 
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 100%
-      );
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     overflow: hidden;
   }
 
@@ -277,29 +266,18 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: 
-      radial-gradient(
-        ellipse at 20% 30%,
-        rgba(120, 119, 198, 0.3),
-        transparent 50%
-      ),
-      radial-gradient(
-        ellipse at 60% 70%,
-        rgba(255, 119, 198, 0.3),
-        transparent 50%
-      ),
-      radial-gradient(
-        ellipse at 80% 10%,
-        rgba(120, 219, 255, 0.3),
-        transparent 50%
-      );
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(120, 119, 198, 0.3), transparent 50%),
+      radial-gradient(ellipse at 60% 70%, rgba(255, 119, 198, 0.3), transparent 50%),
+      radial-gradient(ellipse at 80% 10%, rgba(120, 219, 255, 0.3), transparent 50%);
     animation: aurora-shift 15s ease-in-out infinite;
     filter: blur(40px);
     opacity: 0.7;
   }
 
   @keyframes aurora-shift {
-    0%, 100% {
+    0%,
+    100% {
       transform: translate(0, 0) rotate(0deg);
     }
     33% {
@@ -312,12 +290,8 @@
 
   /* Holographic Glass */
   .glass-holographic {
-    background: 
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 100%
-      ),
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%),
       linear-gradient(
         45deg,
         transparent 30%,
@@ -326,16 +300,22 @@
         rgba(100, 255, 200, 0.1) 60%,
         transparent 70%
       );
-    background-size: 100% 100%, 200% 200%;
+    background-size:
+      100% 100%,
+      200% 200%;
     animation: holographic-shift 4s linear infinite;
   }
 
   @keyframes holographic-shift {
     0% {
-      background-position: 0% 0%, 0% 0%;
+      background-position:
+        0% 0%,
+        0% 0%;
     }
     100% {
-      background-position: 0% 0%, 100% 100%;
+      background-position:
+        0% 0%,
+        100% 100%;
     }
   }
 
@@ -371,13 +351,12 @@
     position: relative;
     backdrop-filter: blur(16px) saturate(200%) brightness(1.1) hue-rotate(5deg);
     -webkit-backdrop-filter: blur(16px) saturate(200%) brightness(1.1) hue-rotate(5deg);
-    background: 
-      /* Base layer */
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.05) 100%
-      );
+    /* Base layer */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
     overflow: hidden;
   }
 
@@ -391,15 +370,14 @@
 
   /* Prismatic light splitting effect */
   .glass-crystal::before {
-    background: 
-      conic-gradient(
-        from 45deg at 30% 30%,
-        transparent,
-        rgba(255, 100, 100, 0.1),
-        rgba(100, 255, 100, 0.1),
-        rgba(100, 100, 255, 0.1),
-        transparent
-      );
+    background: conic-gradient(
+      from 45deg at 30% 30%,
+      transparent,
+      rgba(255, 100, 100, 0.1),
+      rgba(100, 255, 100, 0.1),
+      rgba(100, 100, 255, 0.1),
+      transparent
+    );
     filter: blur(20px);
     transform: scale(1.2);
     opacity: 0.6;
@@ -409,7 +387,7 @@
 
   /* Light refraction streaks */
   .glass-crystal::after {
-    background: 
+    background:
       repeating-linear-gradient(
         45deg,
         transparent,

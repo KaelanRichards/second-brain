@@ -51,6 +51,29 @@ impl Database {
         .execute(&pool)
         .await?;
         
+        sqlx::query(
+            r#"
+            CREATE TABLE IF NOT EXISTS notes (
+                id TEXT PRIMARY KEY NOT NULL,
+                date TEXT NOT NULL UNIQUE,
+                content TEXT NOT NULL,
+                word_count INTEGER NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+            "#
+        )
+        .execute(&pool)
+        .await?;
+        
+        sqlx::query(
+            r#"
+            CREATE INDEX IF NOT EXISTS idx_notes_date ON notes(date)
+            "#
+        )
+        .execute(&pool)
+        .await?;
+        
         Ok(Self {
             pool: Arc::new(pool),
         })
