@@ -6,7 +6,11 @@ import { useNotesStore } from '@/stores/notes-store';
 import { useThemeStore } from '@/stores/theme-store';
 import type { NoteMetadata } from '@/types/note';
 
-export function NotesSidebar() {
+interface NotesSidebarProps {
+  onClose?: () => void;
+}
+
+export function NotesSidebar({ onClose }: NotesSidebarProps) {
   const { currentDate, setCurrentDate, getAllNotes, isLoading: isSaving } = useNotesStore();
   const { theme, toggleTheme } = useThemeStore();
   const [notes, setNotes] = useState<NoteMetadata[]>([]);
@@ -77,10 +81,24 @@ export function NotesSidebar() {
   };
 
   return (
-    <div className="w-64 h-full glass-surface border-r border-white/10 flex flex-col">
+    <div className="w-64 h-full bg-muted/30 border-r border-border/10 flex flex-col">
+      {/* Header */}
+      <div className="px-4 py-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Notes</h2>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg hover:bg-accent/10 transition-colors"
+            title="Hide sidebar (⌘B)"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+        )}
+      </div>
+
       {/* Navigation Controls */}
-      <div className="p-4 border-b border-white/10">
-        <div className="flex items-center justify-between mb-4">
+      <div className="px-4 pb-3">
+        <div className="flex items-center justify-between">
           <Button size="sm" variant="ghost" onClick={() => navigateDate('prev')} className="p-2">
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -107,38 +125,32 @@ export function NotesSidebar() {
               key={note.id}
               onClick={() => setCurrentDate(note.date)}
               className={cn(
-                'w-full text-left px-3 py-2 rounded-lg transition-colors',
-                'hover:bg-white/10',
-                note.date === currentDate && 'bg-white/15 font-medium'
+                'w-full text-left px-3 py-2 rounded-md transition-colors text-sm',
+                'hover:bg-muted',
+                note.date === currentDate && 'bg-muted font-medium'
               )}
             >
-              <div className="text-sm">{formatDateForList(note.date)}</div>
-              {note.preview && (
-                <div className="text-xs text-text-muted mt-1 line-clamp-2">{note.preview}</div>
-              )}
+              {formatDateForList(note.date)}
             </button>
             ))}
           </div>
         )}
       </div>
 
-      {/* Stats & Theme Toggle */}
-      <div className="p-4 border-t border-white/10">
-        <div className="flex items-center justify-between mb-3">
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={toggleTheme}
-            className="p-2"
-            title={`Current: ${theme} theme`}
-          >
-            {getThemeIcon()}
-          </Button>
+      {/* Footer */}
+      <div className="p-4 flex items-center justify-between">
+        <div className="text-xs text-muted-foreground">
+          {notes.length} notes
         </div>
-        <div className="text-sm text-text-muted space-y-1">
-          <div>{notes.length} notes</div>
-          <div>{notes.reduce((sum, n) => sum + n.wordCount, 0).toLocaleString()} total words</div>
-        </div>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={toggleTheme}
+          className="p-2"
+          title={`Current: ${theme} theme`}
+        >
+          {getThemeIcon()}
+        </Button>
       </div>
     </div>
   );

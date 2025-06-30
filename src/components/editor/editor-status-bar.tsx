@@ -44,61 +44,19 @@ export const EditorStatusBar: React.FC<EditorStatusBarProps> = ({
   return (
     <div
       className={cn(
-        'flex items-center justify-between px-4 py-2',
-        'bg-background/50 backdrop-blur-sm border-t border-border/50',
+        'flex items-center justify-between',
         'text-xs text-muted-foreground',
         className
       )}
     >
-      <div className="flex items-center gap-4">
-        <span>{wordCount} words</span>
-        <span>{charCount} characters</span>
-        <span>{readingTime} min read</span>
+      <div className="flex items-center gap-3">
+        <span>{wordCount.toLocaleString()} words</span>
+        {readingTime > 0 && <span>{readingTime} min read</span>}
       </div>
 
-      <div className="flex items-center gap-4">
-        {isAutoSaving && <span className="text-primary animate-pulse">Saving...</span>}
-        {!isAutoSaving && lastSaved && <span>Saved {formatLastSaved(lastSaved)}</span>}
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onFontSizeChange(Math.max(12, fontSize - 2))}
-            className="p-1 hover:bg-accent/50 rounded"
-            title="Decrease font size"
-            type="button"
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M21 10H7M21 10L18 7M21 10L18 13" />
-            </svg>
-          </button>
-
-          <span className="min-w-[3ch] text-center">{fontSize}</span>
-
-          <button
-            onClick={() => onFontSizeChange(Math.min(24, fontSize + 2))}
-            className="p-1 hover:bg-accent/50 rounded"
-            title="Increase font size"
-            type="button"
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M13 5L16 8M16 8L13 11M16 8H3M11 19L8 16M8 16L11 13M8 16H21" />
-            </svg>
-          </button>
-        </div>
+      <div className="flex items-center gap-3">
+        {isAutoSaving && <span className="text-muted-foreground">Saving...</span>}
+        {!isAutoSaving && lastSaved && <span className="text-muted-foreground">Saved</span>}
       </div>
     </div>
   );

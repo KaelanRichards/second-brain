@@ -50,9 +50,9 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   <button
     onClick={onClick}
     className={cn(
-      'p-2 rounded hover:bg-accent/50 transition-colors',
-      'focus:outline-none focus:ring-2 focus:ring-accent/50',
-      active && 'bg-accent/50'
+      'p-2 rounded-md transition-colors',
+      'hover:bg-muted',
+      active && 'bg-muted text-foreground'
     )}
     title={title}
     type="button"
@@ -81,33 +81,16 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   return (
     <div
       className={cn(
-        'flex items-center justify-between px-4 py-2',
-        'bg-background/50 backdrop-blur-sm border-b border-border/50',
+        'flex items-center justify-between',
         className
       )}
     >
-      <div className="flex items-center gap-1">
-        {/* Text formatting */}
-        <div className="flex items-center gap-1 pr-2 border-r border-border/50">
-          <ToolbarButton onClick={onBold} icon={Bold} title="Bold (⌘B)" />
-          <ToolbarButton onClick={onItalic} icon={Italic} title="Italic (⌘I)" />
-          <ToolbarButton onClick={onCode} icon={Code} title="Code (⌘`)" />
-          <ToolbarButton onClick={onLink} icon={Link} title="Link (⌘K)" />
-        </div>
-
-        {/* Block formatting */}
-        <div className="flex items-center gap-1 px-2 border-r border-border/50">
-          <ToolbarButton onClick={onQuote} icon={Quote} title="Quote (⌘⇧Q)" />
-          <ToolbarButton onClick={onBulletList} icon={List} title="Bullet List (⌘⇧8)" />
-          <ToolbarButton onClick={onNumberedList} icon={ListOrdered} title="Numbered List (⌘⇧7)" />
-        </div>
-
-        {/* Headings */}
-        <div className="flex items-center gap-1 pl-2">
-          <ToolbarButton onClick={onHeading1} icon={Heading1} title="Heading 1 (⌘1)" />
-          <ToolbarButton onClick={onHeading2} icon={Heading2} title="Heading 2 (⌘2)" />
-          <ToolbarButton onClick={onHeading3} icon={Heading3} title="Heading 3 (⌘3)" />
-        </div>
+      <div className="flex items-center gap-2">
+        <ToolbarButton onClick={onBold} icon={Bold} title="Bold (⌘B)" />
+        <ToolbarButton onClick={onItalic} icon={Italic} title="Italic (⌘I)" />
+        <ToolbarButton onClick={onHeading1} icon={Heading1} title="Heading (⌘1)" />
+        <ToolbarButton onClick={onBulletList} icon={List} title="List (⌘⇧8)" />
+        <ToolbarButton onClick={onLink} icon={Link} title="Link (⌘K)" />
       </div>
 
       {/* View controls */}

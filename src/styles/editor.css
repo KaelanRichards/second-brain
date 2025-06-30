@@ -1,6 +1,23 @@
+/* Remove focus rings from editor */
+.cm-editor:focus-visible,
+.cm-editor:focus,
+.cm-editor.cm-focused {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+}
+
+.cm-content:focus-visible,
+.cm-content:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+}
+
 /* Focus mode styles */
 .focus-mode .cm-editor {
-  max-width: 48rem;
   margin: 0 auto;
   transition: all 0.3s ease;
 }
@@ -19,9 +36,3 @@
   opacity: 1;
 }
 
-/* Hide UI elements in focus mode */
-.focus-mode-hidden {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}

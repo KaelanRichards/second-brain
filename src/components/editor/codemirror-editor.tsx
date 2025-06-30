@@ -231,8 +231,6 @@ const CodeMirrorEditorComponent: React.FC<CodeMirrorEditorProps> = ({
       ref={editorRef}
       className={cn(
         'h-full w-full overflow-auto',
-        'bg-background/50 backdrop-blur-sm',
-        'rounded-lg border border-border/50',
         className
       )}
     />

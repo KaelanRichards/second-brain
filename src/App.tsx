@@ -17,18 +17,15 @@ function AppContent() {
     useThemeStore.persist.rehydrate();
   }, []);
 
-  // Simplified background component for performance
-  const AnimatedBackground = () => (
-    <div className="fixed inset-0 -z-10">
-      {/* Simple gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-gray-900" />
-    </div>
+  // Clean background
+  const Background = () => (
+    <div className="fixed inset-0 -z-10 bg-background" />
   );
 
   if (view === 'notes') {
     return (
       <div className="min-h-screen relative overflow-hidden">
-        <AnimatedBackground />
+        <Background />
         <DailyNotes />
       </div>
     );
@@ -37,7 +34,7 @@ function AppContent() {
   if (view === 'components') {
     return (
       <div className="min-h-screen relative overflow-hidden">
-        <AnimatedBackground />
+        <Background />
         <Header>
           <HeaderContent>
             <Text size="xl" weight="semibold">
@@ -60,7 +57,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <AnimatedBackground />
+      <Background />
       <Header>
         <HeaderContent>
           <Text size="xl" weight="semibold">

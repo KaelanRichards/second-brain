@@ -1,12 +1,10 @@
 import { format } from 'date-fns';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
 import { useCodeMirrorEditor } from '@/hooks/editor/use-codemirror-editor';
 import { cn } from '@/lib/utils';
 import { useNotesStore } from '@/stores/notes-store';
 import { CodeMirrorEditor } from './codemirror-editor';
-import { CodeMirrorToolbar } from './codemirror-toolbar';
 import { EditorStatusBar } from './editor-status-bar';
 import { EditorToolbar } from './editor-toolbar';
 import { MarkdownPreview } from './markdown-preview';
@@ -17,7 +15,11 @@ export interface DailyNoteEditorRef {
   togglePreview: () => void;
 }
 
-export const DailyNoteEditor = forwardRef<DailyNoteEditorRef, {}>((_, ref) => {
+interface DailyNoteEditorProps {
+  sidebarOpen?: boolean;
+}
+
+export const DailyNoteEditor = forwardRef<DailyNoteEditorRef, DailyNoteEditorProps>(({ sidebarOpen = true }, ref) => {
   const { date } = useParams<{ date: string }>();
   const noteDate = date || format(new Date(), 'yyyy-MM-dd');
   const [initialContent, setInitialContent] = useState('');
@@ -105,81 +107,81 @@ export const DailyNoteEditor = forwardRef<DailyNoteEditorRef, {}>((_, ref) => {
 
   return (
     <div className={cn('flex-1 flex flex-col h-full', editor.focusMode && 'focus-mode')}>
-      {/* Toolbar */}
-      <div className={cn('transition-all duration-300', editor.focusMode && 'focus-mode-hidden')}>
-        <EditorToolbar
-          onBold={editor.commands.toggleBold}
-          onItalic={editor.commands.toggleItalic}
-          onCode={editor.commands.toggleCode}
-          onLink={editor.commands.insertLink}
-          onQuote={editor.commands.insertQuote}
-          onBulletList={editor.commands.insertBulletList}
-          onNumberedList={editor.commands.insertNumberedList}
-          onHeading1={() => editor.commands.insertHeading(1)}
-          onHeading2={() => editor.commands.insertHeading(2)}
-          onHeading3={() => editor.commands.insertHeading(3)}
-          onToggleFocusMode={editor.toggleFocusMode}
-          onTogglePreview={editor.togglePreview}
-          focusModeActive={editor.focusMode}
-          previewActive={editor.showPreview}
-        />
+      {/* Header Section */}
+      <div className={cn(
+        'transition-all duration-300 border-b border-border/10',
+        editor.focusMode && 'opacity-0 pointer-events-none'
+      )}>
+        {/* Toolbar */}
+        <div className="py-3 px-6 lg:px-8 xl:px-12 max-w-6xl mx-auto">
+          <EditorToolbar
+            onBold={editor.commands.toggleBold}
+            onItalic={editor.commands.toggleItalic}
+            onCode={editor.commands.toggleCode}
+            onLink={editor.commands.insertLink}
+            onQuote={editor.commands.insertQuote}
+            onBulletList={editor.commands.insertBulletList}
+            onNumberedList={editor.commands.insertNumberedList}
+            onHeading1={() => editor.commands.insertHeading(1)}
+            onHeading2={() => editor.commands.insertHeading(2)}
+            onHeading3={() => editor.commands.insertHeading(3)}
+            onToggleFocusMode={editor.toggleFocusMode}
+            onTogglePreview={editor.togglePreview}
+            focusModeActive={editor.focusMode}
+            previewActive={editor.showPreview}
+          />
+        </div>
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 flex overflow-hidden relative">
+      <div className={cn(
+        'flex-1 overflow-hidden mx-auto w-full',
+        editor.showPreview ? 'flex max-w-none' : 'max-w-6xl'
+      )}>
         {/* Editor */}
-        <div
-          className={cn(
-            'flex-1 flex flex-col transition-all duration-300',
-            editor.showPreview && 'w-1/2',
-            editor.focusMode && 'max-w-3xl mx-auto px-8'
-          )}
-        >
-          <Card
-            className={cn(
-              'flex-1 overflow-hidden relative',
-              'bg-background/30 backdrop-blur-sm',
-              'border-0',
-              editor.focusMode && 'shadow-2xl'
-            )}
-          >
-            <CodeMirrorEditor
-              value={editor.value}
-              onChange={editor.setValue}
-              onSelectionChange={editor.handleSelectionChange}
-              onViewCreated={editor.onViewCreated}
-              placeholder="Start writing..."
-              fontSize={editor.fontSize}
-              autoFocus
-              extensions={editor.extensions}
-              className="h-full"
-            />
-            {/* Contextual Toolbar */}
-            <CodeMirrorToolbar view={editor.viewRef.current} commands={editor.commands} />
-          </Card>
+        <div className={cn(
+          'flex-1 overflow-hidden relative px-6 lg:px-8 xl:px-12 py-8',
+          editor.focusMode && 'max-w-4xl mx-auto',
+          editor.showPreview && 'w-1/2 border-r border-border/10'
+        )}>
+          <CodeMirrorEditor
+            value={editor.value}
+            onChange={editor.setValue}
+            onSelectionChange={editor.handleSelectionChange}
+            onViewCreated={editor.onViewCreated}
+            placeholder="Start writing..."
+            fontSize={editor.fontSize}
+            autoFocus
+            extensions={editor.extensions}
+            className="h-full"
+          />
         </div>
 
         {/* Preview */}
         {editor.showPreview && (
-          <div className="w-1/2 px-2">
-            <Card className="h-full overflow-hidden bg-background/30 backdrop-blur-sm border-border/50">
-              <MarkdownPreview content={editor.value} />
-            </Card>
+          <div className="w-1/2 px-6 lg:px-8 xl:px-12 py-8 overflow-hidden">
+            <MarkdownPreview content={editor.value} />
           </div>
         )}
       </div>
 
-      {/* Status bar */}
-      <div className={cn('transition-all duration-300', editor.focusMode && 'focus-mode-hidden')}>
-        <EditorStatusBar
-          wordCount={editor.stats.words}
-          charCount={editor.stats.characters}
-          readingTime={editor.stats.readingTime}
-          fontSize={editor.fontSize}
-          onFontSizeChange={editor.setFontSize}
-          isAutoSaving={editor.isAutoSaving}
-          lastSaved={editor.lastSaved}
-        />
+      {/* Footer Section */}
+      <div className={cn(
+        'transition-all duration-300 border-t border-border/10',
+        editor.focusMode && 'opacity-0 pointer-events-none'
+      )}>
+        {/* Status bar */}
+        <div className="py-3 px-6 lg:px-8 xl:px-12 max-w-6xl mx-auto">
+          <EditorStatusBar
+            wordCount={editor.stats.words}
+            charCount={editor.stats.characters}
+            readingTime={editor.stats.readingTime}
+            fontSize={editor.fontSize}
+            onFontSizeChange={editor.setFontSize}
+            isAutoSaving={editor.isAutoSaving}
+            lastSaved={editor.lastSaved}
+          />
+        </div>
       </div>
     </div>
   );
