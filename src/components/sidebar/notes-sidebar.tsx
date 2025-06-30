@@ -15,7 +15,7 @@ export function NotesSidebar({ onClose }: NotesSidebarProps) {
   const { theme, toggleTheme } = useThemeStore();
   const [notes, setNotes] = useState<NoteMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [lastRefresh, setLastRefresh] = useState(Date.now());
+  const [_lastRefresh, _setLastRefresh] = useState(Date.now());
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -32,10 +32,10 @@ export function NotesSidebar({ onClose }: NotesSidebarProps) {
     };
 
     loadNotes();
-  }, []); // Only load once on mount
+  }, [getAllNotes]); // Only load once on mount
 
   const navigateDate = (direction: 'prev' | 'next') => {
-    const current = new Date(currentDate + 'T00:00:00');
+    const current = new Date(`${currentDate}T00:00:00`);
     const newDate = new Date(current);
     newDate.setDate(current.getDate() + (direction === 'next' ? 1 : -1));
     const dateStr = newDate.toISOString().split('T')[0];
@@ -63,7 +63,7 @@ export function NotesSidebar({ onClose }: NotesSidebarProps) {
   };
 
   const formatDateForList = (dateStr: string) => {
-    const date = new Date(dateStr + 'T00:00:00');
+    const date = new Date(`${dateStr}T00:00:00`);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -121,17 +121,17 @@ export function NotesSidebar({ onClose }: NotesSidebarProps) {
         ) : (
           <div className="space-y-1">
             {notes.map((note) => (
-            <button
-              key={note.id}
-              onClick={() => setCurrentDate(note.date)}
-              className={cn(
-                'w-full text-left px-3 py-2 rounded-md transition-colors text-sm',
-                'hover:bg-muted',
-                note.date === currentDate && 'bg-muted font-medium'
-              )}
-            >
-              {formatDateForList(note.date)}
-            </button>
+              <button
+                key={note.id}
+                onClick={() => setCurrentDate(note.date)}
+                className={cn(
+                  'w-full text-left px-3 py-2 rounded-md transition-colors text-sm',
+                  'hover:bg-muted',
+                  note.date === currentDate && 'bg-muted font-medium'
+                )}
+              >
+                {formatDateForList(note.date)}
+              </button>
             ))}
           </div>
         )}
@@ -139,9 +139,7 @@ export function NotesSidebar({ onClose }: NotesSidebarProps) {
 
       {/* Footer */}
       <div className="p-4 flex items-center justify-between">
-        <div className="text-xs text-muted-foreground">
-          {notes.length} notes
-        </div>
+        <div className="text-xs text-muted-foreground">{notes.length} notes</div>
         <Button
           size="sm"
           variant="ghost"

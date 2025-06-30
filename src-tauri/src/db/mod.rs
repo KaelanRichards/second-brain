@@ -16,63 +16,14 @@ impl Database {
                 .create_if_missing(true)
         ).await?;
         
-        // Run migrations manually for now
-        sqlx::query(
-            r#"
-            CREATE TABLE IF NOT EXISTS users (
-                id TEXT PRIMARY KEY NOT NULL,
-                email TEXT NOT NULL UNIQUE,
-                name TEXT NOT NULL,
-                created_at TEXT NOT NULL,
-                updated_at TEXT NOT NULL
-            )
-            "#
-        )
-        .execute(&pool)
-        .await?;
-        
-        sqlx::query(
-            r#"
-            CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)
-            "#
-        )
-        .execute(&pool)
-        .await?;
-        
-        sqlx::query(
-            r#"
-            CREATE TABLE IF NOT EXISTS settings (
-                key TEXT PRIMARY KEY NOT NULL,
-                value TEXT NOT NULL,
-                updated_at TEXT NOT NULL
-            )
-            "#
-        )
-        .execute(&pool)
-        .await?;
-        
-        sqlx::query(
-            r#"
-            CREATE TABLE IF NOT EXISTS notes (
-                id TEXT PRIMARY KEY NOT NULL,
-                date TEXT NOT NULL UNIQUE,
-                content TEXT NOT NULL,
-                word_count INTEGER NOT NULL,
-                created_at TEXT NOT NULL,
-                updated_at TEXT NOT NULL
-            )
-            "#
-        )
-        .execute(&pool)
-        .await?;
-        
-        sqlx::query(
-            r#"
-            CREATE INDEX IF NOT EXISTS idx_notes_date ON notes(date)
-            "#
-        )
-        .execute(&pool)
-        .await?;
+        // Run migrations
+        sqlx::migrate!("./migrations")
+            .run(&pool)
+            .await
+            .map_err(|e| {
+                log::error!("Failed to run database migrations: {}", e);
+                e
+            })?;
         
         Ok(Self {
             pool: Arc::new(pool),

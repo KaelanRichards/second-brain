@@ -27,7 +27,7 @@ pub struct UpdateNoteDto {
     pub content: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 #[serde(rename_all = "camelCase")]
 pub struct NoteMetadata {
     pub id: String,
@@ -39,6 +39,7 @@ pub struct NoteMetadata {
     pub updated_at: String,
 }
 
+#[allow(dead_code)]
 impl Note {
     pub fn new(date: String, content: String) -> Self {
         let now = Utc::now().to_rfc3339();
@@ -74,8 +75,9 @@ impl Note {
     
     fn get_preview(&self, length: usize) -> String {
         let cleaned = self.content.replace('\n', " ").trim().to_string();
-        if cleaned.len() > length {
-            format!("{}...", &cleaned[..length])
+        if cleaned.chars().count() > length {
+            let preview: String = cleaned.chars().take(length).collect();
+            format!("{}...", preview)
         } else {
             cleaned
         }

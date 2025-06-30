@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { CommandPalette } from '@/components/command-palette/command-palette';
-import { DailyNoteEditor, type DailyNoteEditorRef } from '@/components/editor/daily-note-editor';
+import {
+  DailyNoteEditorWrapper as DailyNoteEditor,
+  type DailyNoteEditorRef,
+} from '@/components/editor/daily-note-editor-wrapper';
 import { NotesSidebar } from '@/components/sidebar/notes-sidebar';
 
 export function DailyNotes() {
@@ -28,7 +31,7 @@ export function DailyNotes() {
       // Toggle sidebar (Cmd+B / Ctrl+B)
       if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
         e.preventDefault();
-        setSidebarOpen(prev => !prev);
+        setSidebarOpen((prev) => !prev);
       }
 
       // Close command palette on Escape
@@ -44,7 +47,9 @@ export function DailyNotes() {
   return (
     <div className="h-screen flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 overflow-hidden`}>
+      <div
+        className={`${sidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 overflow-hidden`}
+      >
         <NotesSidebar onClose={() => setSidebarOpen(false)} />
       </div>
 
@@ -74,7 +79,7 @@ export function DailyNotes() {
               </svg>
             </button>
           )}
-          
+
           <DailyNoteEditor ref={editorRef} sidebarOpen={sidebarOpen} />
         </div>
       </main>

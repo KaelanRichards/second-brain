@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from '@/components/layout/container';
 import { Header, HeaderContent } from '@/components/layout/header';
 import { Stack } from '@/components/layout/stack';
@@ -9,6 +10,9 @@ import { DailyNotes } from '@/pages/DailyNotes';
 import { useThemeStore } from '@/stores/theme-store';
 import { QueryProvider } from './providers/query-provider';
 
+// Clean background component
+const Background = () => <div className="fixed inset-0 -z-10 bg-base" />;
+
 function AppContent() {
   const [view, setView] = useState<'home' | 'notes' | 'components'>('notes');
 
@@ -16,11 +20,6 @@ function AppContent() {
   useEffect(() => {
     useThemeStore.persist.rehydrate();
   }, []);
-
-  // Clean background
-  const Background = () => (
-    <div className="fixed inset-0 -z-10 bg-background" />
-  );
 
   if (view === 'notes') {
     return (
@@ -97,7 +96,25 @@ function AppContent() {
 function App() {
   return (
     <QueryProvider>
-      <AppContent />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/notes" replace />} />
+          <Route path="/notes" element={
+            <div className="min-h-screen relative overflow-hidden">
+              <Background />
+              <DailyNotes />
+            </div>
+          } />
+          <Route path="/notes/:date" element={
+            <div className="min-h-screen relative overflow-hidden">
+              <Background />
+              <DailyNotes />
+            </div>
+          } />
+          <Route path="/components" element={<ComponentShowcase />} />
+          <Route path="/home" element={<AppContent />} />
+        </Routes>
+      </BrowserRouter>
     </QueryProvider>
   );
 }

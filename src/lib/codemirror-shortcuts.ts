@@ -195,7 +195,7 @@ export function createKeyboardShortcuts(handlers: ShortcutHandlers): Extension {
         if (/^(\s+)([-*+]|\d+\.)\s/.test(lineText)) {
           // Remove up to 2 spaces
           const match = lineText.match(/^(\s+)/);
-          if (match && match[1]) {
+          if (match?.[1]) {
             const spaces = match[1];
             const toRemove = Math.min(2, spaces.length);
             view.dispatch({

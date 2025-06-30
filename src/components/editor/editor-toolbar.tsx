@@ -1,20 +1,7 @@
-import {
-  Bold,
-  Code,
-  Eye,
-  EyeOff,
-  Focus,
-  Heading1,
-  Heading2,
-  Heading3,
-  Italic,
-  Link,
-  List,
-  ListOrdered,
-  Quote,
-} from 'lucide-react';
+import { Bold, Eye, EyeOff, Focus, Heading1, Italic, Link, List } from 'lucide-react';
 import type React from 'react';
 import { cn } from '@/lib/utils';
+import { getModKey } from '@/utils/platform';
 
 interface EditorToolbarProps {
   onBold: () => void;
@@ -78,19 +65,16 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   previewActive,
   className,
 }) => {
+  const modKey = getModKey();
+
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between', className)}>
       <div className="flex items-center gap-2">
-        <ToolbarButton onClick={onBold} icon={Bold} title="Bold (⌘B)" />
-        <ToolbarButton onClick={onItalic} icon={Italic} title="Italic (⌘I)" />
-        <ToolbarButton onClick={onHeading1} icon={Heading1} title="Heading (⌘1)" />
-        <ToolbarButton onClick={onBulletList} icon={List} title="List (⌘⇧8)" />
-        <ToolbarButton onClick={onLink} icon={Link} title="Link (⌘K)" />
+        <ToolbarButton onClick={onBold} icon={Bold} title={`Bold (${modKey}B)`} />
+        <ToolbarButton onClick={onItalic} icon={Italic} title={`Italic (${modKey}I)`} />
+        <ToolbarButton onClick={onHeading1} icon={Heading1} title={`Heading (${modKey}1)`} />
+        <ToolbarButton onClick={onBulletList} icon={List} title={`List (${modKey}⇧8)`} />
+        <ToolbarButton onClick={onLink} icon={Link} title={`Link (${modKey}K)`} />
       </div>
 
       {/* View controls */}
@@ -98,13 +82,13 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         <ToolbarButton
           onClick={onTogglePreview}
           icon={previewActive ? EyeOff : Eye}
-          title={previewActive ? 'Hide Preview (⌘⇧P)' : 'Show Preview (⌘⇧P)'}
+          title={previewActive ? `Hide Preview (${modKey}⇧P)` : `Show Preview (${modKey}⇧P)`}
           active={previewActive}
         />
         <ToolbarButton
           onClick={onToggleFocusMode}
           icon={Focus}
-          title="Focus Mode (⌘⇧F)"
+          title={`Focus Mode (${modKey}⇧F)`}
           active={focusModeActive}
         />
       </div>

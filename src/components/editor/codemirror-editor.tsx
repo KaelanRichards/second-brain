@@ -85,10 +85,16 @@ const CodeMirrorEditorComponent: React.FC<CodeMirrorEditorProps> = ({
           borderLeftColor: 'var(--foreground)',
         },
         '.cm-selectionBackground': {
-          backgroundColor: 'var(--accent)',
+          backgroundColor: 'hsl(220 13% 80%)',
         },
         '.cm-focused .cm-selectionBackground': {
-          backgroundColor: 'var(--accent)',
+          backgroundColor: 'hsl(220 13% 75%)',
+        },
+        '.dark .cm-selectionBackground': {
+          backgroundColor: 'hsl(220 13% 18%)',
+        },
+        '.dark .cm-focused .cm-selectionBackground': {
+          backgroundColor: 'hsl(220 13% 22%)',
         },
         '.cm-line': {
           padding: '0',
@@ -226,15 +232,7 @@ const CodeMirrorEditorComponent: React.FC<CodeMirrorEditorProps> = ({
     });
   }, [extensions]);
 
-  return (
-    <div
-      ref={editorRef}
-      className={cn(
-        'h-full w-full overflow-auto',
-        className
-      )}
-    />
-  );
+  return <div ref={editorRef} className={cn('h-full w-full overflow-auto', className)} />;
 };
 
 export const CodeMirrorEditor = React.memo(CodeMirrorEditorComponent);

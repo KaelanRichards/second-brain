@@ -56,7 +56,9 @@ export const EditorStatusBar: React.FC<EditorStatusBarProps> = ({
 
       <div className="flex items-center gap-3">
         {isAutoSaving && <span className="text-muted-foreground">Saving...</span>}
-        {!isAutoSaving && lastSaved && <span className="text-muted-foreground">Saved</span>}
+        {!isAutoSaving && lastSaved && (
+          <span className="text-muted-foreground">Saved {formatLastSaved(lastSaved)}</span>
+        )}
       </div>
     </div>
   );

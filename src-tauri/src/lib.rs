@@ -8,6 +8,13 @@ use db::Database;
 use services::{UserService, NoteService};
 use tauri::Manager;
 
+// Helper function to show error dialog
+fn show_error_dialog(message: &str) {
+    // In Tauri v2, dialogs must be shown from within the app context
+    // For now, we'll just log the error
+    log::error!("Application Error: {}", message);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // Initialize logger
@@ -17,16 +24,42 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             // Initialize database
-            let app_dir = app.path().app_data_dir().expect("Failed to get app dir");
-            std::fs::create_dir_all(&app_dir).expect("Failed to create app dir");
+            let app_dir = match app.path().app_data_dir() {
+                Ok(dir) => dir,
+                Err(e) => {
+                    log::error!("Failed to get app data directory: {}", e);
+                    show_error_dialog("Failed to access application data directory");
+                    return Err(Box::new(e));
+                }
+            };
+            
+            if let Err(e) = std::fs::create_dir_all(&app_dir) {
+                log::error!("Failed to create app directory: {}", e);
+                show_error_dialog("Failed to create application directory");
+                return Err(Box::new(e));
+            }
             
             let db_path = app_dir.join("legendary.db");
-            let db_path_str = db_path.to_str().expect("Failed to convert path to string");
+            let db_path_str = match db_path.to_str() {
+                Some(path) => path,
+                None => {
+                    log::error!("Failed to convert database path to string");
+                    show_error_dialog("Invalid database path");
+                    return Err("Invalid database path".into());
+                }
+            };
             
             // Block on async database initialization
-            let db = tauri::async_runtime::block_on(async {
-                Database::new(db_path_str).await.expect("Failed to initialize database")
-            });
+            let db = match tauri::async_runtime::block_on(async {
+                Database::new(db_path_str).await
+            }) {
+                Ok(database) => database,
+                Err(e) => {
+                    log::error!("Failed to initialize database: {}", e);
+                    show_error_dialog("Failed to initialize database. The application will now close.");
+                    return Err(Box::new(e));
+                }
+            };
             
             // Initialize services
             let user_service = UserService::new(db.clone());

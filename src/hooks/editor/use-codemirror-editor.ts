@@ -25,6 +25,7 @@ interface UseCodeMirrorEditorProps {
 interface UseCodeMirrorEditorReturn {
   value: string;
   setValue: (value: string) => void;
+  view: EditorView | null;
   viewRef: React.RefObject<EditorView | null>;
   commands: EditorCommands;
   selection: { from: number; to: number; text: string };
@@ -60,6 +61,7 @@ export function useCodeMirrorEditor({
   const [showPreview, setShowPreview] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [view, setView] = useState<EditorView | null>(null);
 
   // Handle value changes
   const handleValueChange = useCallback(
@@ -81,6 +83,7 @@ export function useCodeMirrorEditor({
   // Handle view creation
   const onViewCreated = useCallback((view: EditorView) => {
     viewRef.current = view;
+    setView(view);
   }, []);
 
   // Debounced value for auto-save
@@ -100,7 +103,7 @@ export function useCodeMirrorEditor({
   useEffect(() => {
     if (debouncedValue && onSave && debouncedValue !== initialValue) {
       let timeout: ReturnType<typeof setTimeout>;
-      
+
       const performSave = async () => {
         setIsAutoSaving(true);
         try {
@@ -195,6 +198,7 @@ export function useCodeMirrorEditor({
   return {
     value,
     setValue: handleValueChange,
+    view,
     viewRef,
     commands,
     selection,

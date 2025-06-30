@@ -1,6 +1,6 @@
 import { StateEffect } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { Bold, Code, Hash, Italic, Link, List, ListOrdered, Quote } from 'lucide-react';
+import { Bold, Italic, Link, Hash } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { EditorCommands } from '@/hooks/editor/use-codemirror-commands';
@@ -114,13 +114,9 @@ export const CodeMirrorToolbar: React.FC<CodeMirrorToolbarProps> = ({
   }, [view, checkSelection]);
 
   const tools = [
-    { icon: Bold, action: commands.toggleBold, title: 'Bold (⌘B)' },
-    { icon: Italic, action: commands.toggleItalic, title: 'Italic (⌘I)' },
-    { icon: Code, action: commands.toggleCode, title: 'Code (⌘`)' },
-    { icon: Link, action: commands.insertLink, title: 'Link (⌘K)' },
-    { icon: Quote, action: commands.insertQuote, title: 'Quote' },
-    { icon: List, action: commands.insertBulletList, title: 'Bullet List' },
-    { icon: ListOrdered, action: commands.insertNumberedList, title: 'Numbered List' },
+    { icon: Bold, action: commands.toggleBold, title: 'Bold' },
+    { icon: Italic, action: commands.toggleItalic, title: 'Italic' },
+    { icon: Link, action: commands.insertLink, title: 'Link' },
     { icon: Hash, action: () => commands.insertHeading(2), title: 'Heading' },
   ];
 
@@ -128,10 +124,9 @@ export const CodeMirrorToolbar: React.FC<CodeMirrorToolbarProps> = ({
     <div
       ref={toolbarRef}
       className={cn(
-        'absolute z-50 flex items-center gap-1 p-1',
-        'bg-background/95 backdrop-blur-sm',
-        'border border-border/50 rounded-lg shadow-lg',
-        'transition-all duration-200',
+        'absolute z-50 flex items-center gap-0.5 p-1',
+        'bg-popover border border-border rounded-md shadow-md',
+        'transition-all duration-150',
         position.visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none',
         className
       )}
@@ -140,23 +135,19 @@ export const CodeMirrorToolbar: React.FC<CodeMirrorToolbarProps> = ({
         left: `${position.left}px`,
       }}
     >
-      {tools.map((tool, index) => (
+      {tools.map((tool) => (
         <button
-          key={index}
+          key={tool.title}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             tool.action();
           }}
-          className={cn(
-            'p-1.5 rounded hover:bg-accent/50',
-            'transition-colors duration-150',
-            'focus:outline-none focus:ring-2 focus:ring-accent/50'
-          )}
+          className={cn('p-1.5 rounded hover:bg-muted', 'transition-colors duration-150')}
           title={tool.title}
           type="button"
         >
-          <tool.icon className="h-4 w-4" />
+          <tool.icon className="h-3.5 w-3.5" />
         </button>
       ))}
     </div>

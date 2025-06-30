@@ -69,10 +69,23 @@
 
   /* Better selection colors */
   ::selection {
-    background-color: hsl(var(--color-accent) / 0.2);
+    background-color: hsl(220 13% 75%);
+    color: inherit;
   }
 
   ::-moz-selection {
-    background-color: hsl(var(--color-accent) / 0.2);
+    background-color: hsl(220 13% 75%);
+    color: inherit;
+  }
+
+  /* Dark mode selection */
+  .dark ::selection {
+    background-color: hsl(220 13% 22%);
+    color: inherit;
+  }
+
+  .dark ::-moz-selection {
+    background-color: hsl(220 13% 22%);
+    color: inherit;
   }
 }

@@ -130,7 +130,7 @@ export function useCodeMirrorCommands(viewRef: React.RefObject<EditorView | null
     insertHorizontalRule: () => insertAtCursor('\n---\n'),
 
     insertHeading: (level) => {
-      const prefix = '#'.repeat(level) + ' ';
+      const prefix = `${'#'.repeat(level)} `;
       insertLinePrefix(prefix);
     },
 

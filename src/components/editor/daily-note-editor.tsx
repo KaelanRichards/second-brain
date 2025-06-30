@@ -1,10 +1,9 @@
-import { format } from 'date-fns';
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { forwardRef, useCallback, useImperativeHandle } from 'react';
 import { useCodeMirrorEditor } from '@/hooks/editor/use-codemirror-editor';
 import { cn } from '@/lib/utils';
 import { useNotesStore } from '@/stores/notes-store';
 import { CodeMirrorEditor } from './codemirror-editor';
+import { CodeMirrorToolbar } from './codemirror-toolbar';
 import { EditorStatusBar } from './editor-status-bar';
 import { EditorToolbar } from './editor-toolbar';
 import { MarkdownPreview } from './markdown-preview';
@@ -16,175 +15,143 @@ export interface DailyNoteEditorRef {
 }
 
 interface DailyNoteEditorProps {
+  noteDate: string;
+  initialContent: string;
   sidebarOpen?: boolean;
 }
 
-export const DailyNoteEditor = forwardRef<DailyNoteEditorRef, DailyNoteEditorProps>(({ sidebarOpen = true }, ref) => {
-  const { date } = useParams<{ date: string }>();
-  const noteDate = date || format(new Date(), 'yyyy-MM-dd');
-  const [initialContent, setInitialContent] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+export const DailyNoteEditor = forwardRef<DailyNoteEditorRef, DailyNoteEditorProps>(
+  ({ noteDate, initialContent, sidebarOpen = true }, ref) => {
+    const { saveNote } = useNotesStore();
 
-  const { loadNote, saveNote } = useNotesStore();
-
-  // Load note on mount or date change
-  useEffect(() => {
-    let cancelled = false;
-    
-    const loadNoteContent = async () => {
-      setIsLoading(true);
-      try {
-        const note = await loadNote(noteDate);
-        if (!cancelled) {
-          setInitialContent(note?.content || '');
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to load note:', error);
-        if (!cancelled) {
-          setInitialContent('');
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadNoteContent();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [noteDate, loadNote]);
-
-  // Memoize the save handler to prevent recreating the editor
-  const handleSave = useCallback(async (value: string) => {
-    try {
-      await saveNote(noteDate, value);
-    } catch (error) {
-      console.error('Failed to save note:', error);
-      // TODO: Show error notification
-    }
-  }, [noteDate, saveNote]);
-
-  const editor = useCodeMirrorEditor({
-    initialValue: '', // Start with empty value
-    onChange: undefined, // We don't need onChange since we have auto-save
-    onSave: handleSave,
-    autoSaveDelay: 1000, // Increase to 1 second to reduce backend calls
-    showLineNumbers: false,
-  });
-
-  // Update editor value only once when content is loaded for a new date
-  useEffect(() => {
-    if (!isLoading) {
-      editor.setValue(initialContent);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteDate, isLoading]); // Re-run when date changes or loading completes
-
-  // Expose methods via ref
-  useImperativeHandle(
-    ref,
-    () => ({
-      toggleFocusMode: editor.toggleFocusMode,
-      changeFontSize: (delta: number) => {
-        const newSize = editor.fontSize + delta;
-        if (newSize >= 12 && newSize <= 24) {
-          editor.setFontSize(newSize);
+    // Memoize the save handler to prevent recreating the editor
+    const handleSave = useCallback(
+      async (value: string) => {
+        try {
+          await saveNote(noteDate, value);
+        } catch (error) {
+          console.error('Failed to save note:', error);
+          // TODO: Show error notification
         }
       },
-      togglePreview: editor.togglePreview,
-    }),
-    [editor]
-  );
+      [noteDate, saveNote]
+    );
 
-  if (isLoading) {
+    const editor = useCodeMirrorEditor({
+      initialValue: initialContent,
+      onChange: undefined, // We don't need onChange since we have auto-save
+      onSave: handleSave,
+      autoSaveDelay: 1000, // Increase to 1 second to reduce backend calls
+      showLineNumbers: false,
+    });
+
+    // Expose methods via ref
+    useImperativeHandle(
+      ref,
+      () => ({
+        toggleFocusMode: editor.toggleFocusMode,
+        changeFontSize: (delta: number) => {
+          const newSize = editor.fontSize + delta;
+          if (newSize >= 12 && newSize <= 24) {
+            editor.setFontSize(newSize);
+          }
+        },
+        togglePreview: editor.togglePreview,
+      }),
+      [editor]
+    );
+
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-muted-foreground">Loading note...</div>
+      <div className={cn('flex-1 flex flex-col h-full', editor.focusMode && 'focus-mode')}>
+        {/* Header Section */}
+        <div
+          className={cn(
+            'transition-all duration-300 border-b border-border/10',
+            editor.focusMode && 'opacity-0 pointer-events-none'
+          )}
+        >
+          {/* Toolbar */}
+          <div className="py-3 px-6 lg:px-8 xl:px-12 max-w-6xl mx-auto">
+            <EditorToolbar
+              onBold={editor.commands.toggleBold}
+              onItalic={editor.commands.toggleItalic}
+              onCode={editor.commands.toggleCode}
+              onLink={editor.commands.insertLink}
+              onQuote={editor.commands.insertQuote}
+              onBulletList={editor.commands.insertBulletList}
+              onNumberedList={editor.commands.insertNumberedList}
+              onHeading1={() => editor.commands.insertHeading(1)}
+              onHeading2={() => editor.commands.insertHeading(2)}
+              onHeading3={() => editor.commands.insertHeading(3)}
+              onToggleFocusMode={editor.toggleFocusMode}
+              onTogglePreview={editor.togglePreview}
+              focusModeActive={editor.focusMode}
+              previewActive={editor.showPreview}
+            />
+          </div>
+        </div>
+
+        {/* Main content area */}
+        <div
+          className={cn(
+            'flex-1 overflow-hidden mx-auto w-full',
+            editor.showPreview ? 'flex max-w-none' : 'max-w-6xl'
+          )}
+        >
+          {/* Editor */}
+          <div
+            className={cn(
+              'flex-1 overflow-hidden relative px-6 lg:px-8 xl:px-12 py-8',
+              editor.focusMode && 'max-w-4xl mx-auto',
+              editor.showPreview && 'w-1/2 border-r border-border/10'
+            )}
+          >
+            <CodeMirrorEditor
+              value={editor.value}
+              onChange={editor.setValue}
+              onSelectionChange={editor.handleSelectionChange}
+              onViewCreated={editor.onViewCreated}
+              placeholder="Start writing..."
+              fontSize={editor.fontSize}
+              autoFocus
+              extensions={editor.extensions}
+              className="h-full"
+            />
+            {/* Contextual Toolbar */}
+            <CodeMirrorToolbar view={editor.view} commands={editor.commands} />
+          </div>
+
+          {/* Preview */}
+          {editor.showPreview && (
+            <div className="w-1/2 px-6 lg:px-8 xl:px-12 py-8 overflow-hidden">
+              <MarkdownPreview content={editor.value} />
+            </div>
+          )}
+        </div>
+
+        {/* Footer Section */}
+        <div
+          className={cn(
+            'transition-all duration-300 border-t border-border/10',
+            editor.focusMode && 'opacity-0 pointer-events-none'
+          )}
+        >
+          {/* Status bar */}
+          <div className="py-3 px-6 lg:px-8 xl:px-12 max-w-6xl mx-auto">
+            <EditorStatusBar
+              wordCount={editor.stats.words}
+              charCount={editor.stats.characters}
+              readingTime={editor.stats.readingTime}
+              fontSize={editor.fontSize}
+              onFontSizeChange={editor.setFontSize}
+              isAutoSaving={editor.isAutoSaving}
+              lastSaved={editor.lastSaved}
+            />
+          </div>
+        </div>
       </div>
     );
   }
-
-  return (
-    <div className={cn('flex-1 flex flex-col h-full', editor.focusMode && 'focus-mode')}>
-      {/* Header Section */}
-      <div className={cn(
-        'transition-all duration-300 border-b border-border/10',
-        editor.focusMode && 'opacity-0 pointer-events-none'
-      )}>
-        {/* Toolbar */}
-        <div className="py-3 px-6 lg:px-8 xl:px-12 max-w-6xl mx-auto">
-          <EditorToolbar
-            onBold={editor.commands.toggleBold}
-            onItalic={editor.commands.toggleItalic}
-            onCode={editor.commands.toggleCode}
-            onLink={editor.commands.insertLink}
-            onQuote={editor.commands.insertQuote}
-            onBulletList={editor.commands.insertBulletList}
-            onNumberedList={editor.commands.insertNumberedList}
-            onHeading1={() => editor.commands.insertHeading(1)}
-            onHeading2={() => editor.commands.insertHeading(2)}
-            onHeading3={() => editor.commands.insertHeading(3)}
-            onToggleFocusMode={editor.toggleFocusMode}
-            onTogglePreview={editor.togglePreview}
-            focusModeActive={editor.focusMode}
-            previewActive={editor.showPreview}
-          />
-        </div>
-      </div>
-
-      {/* Main content area */}
-      <div className={cn(
-        'flex-1 overflow-hidden mx-auto w-full',
-        editor.showPreview ? 'flex max-w-none' : 'max-w-6xl'
-      )}>
-        {/* Editor */}
-        <div className={cn(
-          'flex-1 overflow-hidden relative px-6 lg:px-8 xl:px-12 py-8',
-          editor.focusMode && 'max-w-4xl mx-auto',
-          editor.showPreview && 'w-1/2 border-r border-border/10'
-        )}>
-          <CodeMirrorEditor
-            value={editor.value}
-            onChange={editor.setValue}
-            onSelectionChange={editor.handleSelectionChange}
-            onViewCreated={editor.onViewCreated}
-            placeholder="Start writing..."
-            fontSize={editor.fontSize}
-            autoFocus
-            extensions={editor.extensions}
-            className="h-full"
-          />
-        </div>
-
-        {/* Preview */}
-        {editor.showPreview && (
-          <div className="w-1/2 px-6 lg:px-8 xl:px-12 py-8 overflow-hidden">
-            <MarkdownPreview content={editor.value} />
-          </div>
-        )}
-      </div>
-
-      {/* Footer Section */}
-      <div className={cn(
-        'transition-all duration-300 border-t border-border/10',
-        editor.focusMode && 'opacity-0 pointer-events-none'
-      )}>
-        {/* Status bar */}
-        <div className="py-3 px-6 lg:px-8 xl:px-12 max-w-6xl mx-auto">
-          <EditorStatusBar
-            wordCount={editor.stats.words}
-            charCount={editor.stats.characters}
-            readingTime={editor.stats.readingTime}
-            fontSize={editor.fontSize}
-            onFontSizeChange={editor.setFontSize}
-            isAutoSaving={editor.isAutoSaving}
-            lastSaved={editor.lastSaved}
-          />
-        </div>
-      </div>
-    </div>
-  );
-});
+);
 
 DailyNoteEditor.displayName = 'DailyNoteEditor';

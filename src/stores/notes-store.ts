@@ -19,7 +19,7 @@ interface NotesState {
 
 const getPreview = (content: string, length = 100): string => {
   const cleaned = content.replace(/\n+/g, ' ').trim();
-  return cleaned.length > length ? cleaned.substring(0, length) + '...' : cleaned;
+  return cleaned.length > length ? `${cleaned.substring(0, length)}...` : cleaned;
 };
 
 export const useNotesStore = create<NotesState>()((set, get) => ({
@@ -43,10 +43,10 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
       }
 
       set({ isLoading: true });
-      
+
       // Load from backend
       const note = await api.notes.getNote(date);
-      
+
       if (note) {
         // Update cache
         set((state) => ({
@@ -59,7 +59,7 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
       } else {
         set({ isLoading: false });
       }
-      
+
       return note || undefined;
     } catch (error) {
       console.error('Failed to load note:', error);
@@ -71,10 +71,10 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   saveNote: async (date, content) => {
     try {
       set({ isLoading: true });
-      
+
       // Save to backend
       const note = await api.notes.saveNote(date, content);
-      
+
       // Update local cache
       set((state) => ({
         notes: {
@@ -96,10 +96,10 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   deleteNote: async (date) => {
     try {
       set({ isLoading: true });
-      
+
       // Delete from backend
       await api.notes.deleteNote(date);
-      
+
       // Update local cache
       set((state) => {
         const { [date]: deleted, ...rest } = state.notes;
@@ -115,10 +115,10 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   getAllNotes: async () => {
     try {
       set({ isLoading: true });
-      
+
       // Fetch from backend
       const notesMetadata = await api.notes.getAllNotes();
-      
+
       set({ isLoading: false });
       return notesMetadata;
     } catch (error) {
@@ -143,10 +143,10 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   searchNotes: async (query) => {
     try {
       set({ isLoading: true });
-      
+
       // Search in backend
       const notesMetadata = await api.notes.searchNotes(query);
-      
+
       set({ isLoading: false });
       return notesMetadata;
     } catch (error) {

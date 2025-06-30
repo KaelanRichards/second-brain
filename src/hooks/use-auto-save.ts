@@ -47,7 +47,7 @@ export function useAutoSave(content: string, date: string, delay: number = 300):
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [content, date, delay, saveNow]);
+  }, [content, delay, saveNow]);
 
   return { isSaving, lastSaved, saveNow };
 }
